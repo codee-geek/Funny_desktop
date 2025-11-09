@@ -16,9 +16,9 @@ class AppDelegate(NSObject):
         global window, label
 
         screen = NSScreen.mainScreen().frame()
-        w, h = 500, 44
+        w, h = 500, 50
         x = screen.size.width - w - 30
-        y = 60  # bottom right
+        y = 60
 
         rect = NSRect((x, y), (w, h))
 
@@ -29,29 +29,35 @@ class AppDelegate(NSObject):
             False
         )
 
+        # appearance
         window.setOpaque_(False)
-        window.setBackgroundColor_(NSColor.colorWithCalibratedWhite_alpha_(0.1, 0.85))
-
-        # ✅ ALWAYS ON TOP ACROSS ALL SPACES / FULL SCREEN
+        window.setBackgroundColor_(NSColor.clearColor())
         window.setLevel_(NSStatusWindowLevel)
         window.setCollectionBehavior_(NSWindowCollectionBehaviorCanJoinAllSpaces)
         window.setIgnoresMouseEvents_(True)
-
+        window.setHasShadow_(True)
         window.makeKeyAndOrderFront_(None)
 
+        # ---- Rounded Glass Container ----
+        content = window.contentView()
+        content.setWantsLayer_(True)
+        layer = content.layer()
+        layer.setCornerRadius_(12)
+        layer.setMasksToBounds_(True)
+        layer.setBackgroundColor_(NSColor.colorWithCalibratedWhite_alpha_(0.05, 0.85).CGColor())
+
+        # Label
         label = NSTextField.alloc().initWithFrame_(NSRect((10, 10), (w - 20, h - 20)))
         label.setStringValue_(last_roast)
-        label.setFont_(NSFont.systemFontOfSize_(18))
+        label.setFont_(NSFont.systemFontOfSize_(14))
         label.setTextColor_(NSColor.whiteColor())
         label.setBezeled_(False)
         label.setDrawsBackground_(False)
         label.setEditable_(False)
-        label.setFont_(NSFont.systemFontOfSize_(13))   # smaller
+        label.setSelectable_(False)
+        content.addSubview_(label)
 
-
-        window.contentView().addSubview_(label)
-
-        # auto update label
+        # auto update
         NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_(
             0.35, self, "updateText:", None, True
         )
