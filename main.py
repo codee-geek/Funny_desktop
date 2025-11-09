@@ -1,11 +1,11 @@
 import time
 import threading
-import tray
+import overlay
 from detect_screen import get_active_app_info, get_browser_url
 from context_map import classify
 from roaster import roast
 
-def loop():
+def loop_logic():
     last = None
     while True:
         info = get_active_app_info()
@@ -18,14 +18,11 @@ def loop():
         if key != last:
             line = roast(context)
             print("ROAST:", line)
-            tray.last_roast = line
+            overlay.last_roast = line
             last = key
 
         time.sleep(1)
 
 if __name__ == "__main__":
-    # run background logic in thread
-    threading.Thread(target=loop, daemon=True).start()
-
-    # tray runs **here** on the main thread
-    tray.run_tray()
+    threading.Thread(target=loop_logic, daemon=True).start()
+    overlay.run_overlay()   # <-- NOW runs on the main thread

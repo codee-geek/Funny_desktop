@@ -16,12 +16,13 @@ llm = Llama(
 def roast(context):
     prompt = f"""
 <|system|>
-You output short, rude, sarcastic one-liner roasts. Max 12 words. No explanations. No multi-sentence. No helpful tone.
-</|system|>
+You output one short roast. Tone: toxic, rude, dry, gen-z, sarcastic.
+use emojis contextually wisely at the end mostly. No kindness. No questions. No compliments. No positivity.
+Max 10 words. Exactly one line. Never give explanations.</|system|>
 
 <|user|>
 The user is currently: {context}
-Roast them.
+Roast be mean.
 </|user|>
 
 <|assistant|>
@@ -33,4 +34,5 @@ Roast them.
         top_p=0.9,
         stop=["<|user|>", "<|system|>", "</|assistant|>", "</|user|>", "\n\n"]
     )
-    return out["choices"][0]["text"].strip()
+    return out["choices"][0]["text"].strip().strip('"').strip("'")
+
