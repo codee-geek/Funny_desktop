@@ -1,4 +1,24 @@
-# Funny Desktop Roaster
+# Funny Desktop Roaster (Fun Roast Overlay)
+
+A lightweight macOS utility that observes your active app or browser tab and generates short, 
+sarcastic roasts based on what you're doing. Runs fully offline using a local LLM with no API cost.
+
+---
+
+## Features
+- Detects the currently focused app and active browser URL.
+- Classifies activity into simple context labels (e.g., browsing, coding, ChatGPT, etc.).
+- Generates a one-line roast using a local Phi-3 Mini LLM.
+- Displays the roast live through a macOS menu bar overlay.
+- Works completely offline. No external API calls.
+
+---
+
+## System Architecture
+
+get_active_app_info → classify context → generate roast → display in overlay
+
+---
 
 ## Setup
 1. Clone the repo
