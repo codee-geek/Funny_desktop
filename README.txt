@@ -20,6 +20,23 @@ get_active_app_info → classify context → generate roast → display in overl
 
 ---
 
+
+| Component | Responsibility |
+|----------|----------------|
+| `detect_screen.py` | Detects current app and window title. Retrieves browser URL when applicable. |
+| `context_map.py` | Converts raw app/window data into semantic context (e.g., "doomscrolling YouTube"). |
+| `roaster.py` | Uses local Phi-3 model to generate sarcastic one-liner roast. |
+| `tray.py` | Displays roast in macOS menu bar and updates periodically. |
+| `main.py` | Core loop that glues everything together. |
+
+---
+
+## Model
+
+The project uses **Phi-3 Mini 4K Instruct** in **GGUF** format:
+
+---
+
 ## Setup
 1. Clone the repo
 2. Create venv and install dependencies:
