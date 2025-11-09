@@ -1,24 +1,31 @@
 import time
-from detect_screen import get_active_app_info
+import threading
+import tray
+from detect_screen import get_active_app_info, get_browser_url
 from context_map import classify
 from roaster import roast
 
-def main():
+def loop():
     last = None
     while True:
         info = get_active_app_info()
         app, title = info["app"], info["window_title"]
-        key = (app, title)
+        url = get_browser_url(app)
 
+        context = classify(app, title, url)
+        key = (app, title, url)
 
         if key != last:
-            context = classify(app, title)
-            print("CONTEXT:", context)   # <- ADD THIS
             line = roast(context)
             print("ROAST:", line)
+            tray.last_roast = line
             last = key
 
         time.sleep(1)
 
 if __name__ == "__main__":
-    main()
+    # run background logic in thread
+    threading.Thread(target=loop, daemon=True).start()
+
+    # tray runs **here** on the main thread
+    tray.run_tray()

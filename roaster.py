@@ -2,7 +2,8 @@ import os
 from llama_cpp import Llama
 
 BASE_DIR = os.path.dirname(__file__)
-MODEL_PATH = os.path.join(BASE_DIR, "Phi-3-mini-4k-instruct-IQ4_NL.gguf")
+MODEL_PATH = "/Users/atharvawakade/Documents/funny01/Phi-3-mini-4k-instruct-IQ4_NL.gguf"
+
 
 llm = Llama(
     model_path=MODEL_PATH,

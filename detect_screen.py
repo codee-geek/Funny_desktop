@@ -15,6 +15,8 @@ def get_active_app_info():
     end tell
     return frontApp & "||" & winTitle
     '''
+    
+
 
     raw = subprocess.check_output(["osascript", "-e", script]).decode().strip()
     app, title = raw.split("||")
@@ -22,3 +24,11 @@ def get_active_app_info():
         "app": app,
         "window_title": title
     }
+    
+def get_browser_url(app):
+    try:
+        import subprocess, json
+        script = 'tell application "Google Chrome" to return URL of active tab of front window'
+        return subprocess.check_output(["osascript", "-e", script]).decode().strip()
+    except:
+        return None

@@ -1,21 +1,31 @@
-def classify(app, title):
+def classify(app, title, url=None):
     app = app.lower()
-    title = title.lower()
+    title = (title or "").lower()
+    url = (url or "").lower() if url else ""
 
-    if "colab" in title:
-        return "working on Colab but avoiding actually running code"
+    # Known browser contexts
+    if "chrome" in app or "safari" in app or "firefox" in app:
+        if "youtube.com" in url:
+            return "watching YouTube instead of working"
+        if "github.com" in url:
+            return "pretending to improve code"
+        if "chatgpt.com" in url or "openai.com" in url:
+            return "outsourcing thinking to an AI"
+        if "netflix.com" in url:
+            return "full recreational mode"
+        return "aimlessly browsing the internet"
 
-    if "chatgpt" in app or "openai" in title:
-        return "asking an AI to solve life"
-
+    # Coding
     if "code" in app or "vscode" in app or "visual studio" in app:
         return "staring at code hoping it fixes itself"
 
-    if "chrome" in app or "safari" in app or "firefox" in app:
-        if "youtube" in title:
-            return "watching YouTube instead of doing work"
-        if "github" in title:
-            return "browsing GitHub pretending to improve"
-        return "aimlessly browsing the internet"
+    # Notes / docs
+    if "notes" in app or "obsidian" in app:
+        return "writing ideas you will probably ignore"
 
-    return f"using {app} with title: {title}"
+    # Messaging
+    if "whatsapp" in app or "teams" in app or "discord" in app:
+        return "trying to look social but avoiding real conversations"
+
+    # Fallback
+    return f"using {app} with no clear intent"
