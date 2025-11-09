@@ -33,13 +33,13 @@ ________________________________________________________________________________
 ---
 
 ## Project Evolution Summary
-__________________________________________________________________________________________________________________________
-|           Phase              |    Approach      |                              Reasoning                               |    
-|------------------------------|------------------|----------------------------------------------------------------------|
-| Cloud-based APIs             |    Avoided       | Requires internet + costs + latency.                                 |
-| Custom LoRA Fine-Tuning      |   Considered     | Ultimately unnecessary. Base model performs well with prompt tuning. |
-| GGUF Local Model + llama-cpp |    Final         | Fast, offline, efficient on macOS.                                   |
-|------------------------------------------------------------------------------------------------------------------------|
+___________________________________________________________________________________________________________________
+|           Phase              |  Approach  |                              Reasoning                               |    
+|------------------------------|------------|----------------------------------------------------------------------|
+| Cloud-based APIs             |  Avoided   | Requires internet + costs + latency.                                 |
+| Custom LoRA Fine-Tuning      | Considered | Ultimately unnecessary. Base model performs well with prompt tuning. |
+| GGUF Local Model + llama-cpp |  Final     | Fast, offline, efficient on macOS.                                   |
+|------------------------------------------------------------------------------------------------------------------|
 
 ---
 
