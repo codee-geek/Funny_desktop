@@ -1,0 +1,7 @@
+# ignore model files
+*.gguf
+
+# python cache
+__pycache__/
+*.pyc
+
