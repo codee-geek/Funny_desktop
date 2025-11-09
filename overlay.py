@@ -46,6 +46,8 @@ class AppDelegate(NSObject):
         label.setBezeled_(False)
         label.setDrawsBackground_(False)
         label.setEditable_(False)
+        label.setFont_(NSFont.systemFontOfSize_(13))   # smaller
+
 
         window.contentView().addSubview_(label)
 
