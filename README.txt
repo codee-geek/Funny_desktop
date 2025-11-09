@@ -20,14 +20,26 @@ get_active_app_info → classify context → generate roast → display in overl
 
 ---
 
+____________________________________________________________________________________________________________
+|      Component     |                                 Responsibility                                      |
+|--------------------|-------------------------------------------------------------------------------------|
+| `detect_screen.py` | Detects current app and window title. Retrieves browser URL when applicable.        |
+| `context_map.py`   | Converts raw app/window data into semantic context (e.g., "doomscrolling YouTube"). |
+|   `roaster.py`     | Uses local Phi-3 model to generate sarcastic one-liner roast.                       |
+|    `tray.py`       | Displays roast in macOS menu bar and updates periodically.                          |
+|    `main.py`       | Core loop that glues everything together.                                           |
+|--------------------|-------------------------------------------------------------------------------------|
 
-| Component | Responsibility |
-|----------|----------------|
-| `detect_screen.py` | Detects current app and window title. Retrieves browser URL when applicable. |
-| `context_map.py` | Converts raw app/window data into semantic context (e.g., "doomscrolling YouTube"). |
-| `roaster.py` | Uses local Phi-3 model to generate sarcastic one-liner roast. |
-| `tray.py` | Displays roast in macOS menu bar and updates periodically. |
-| `main.py` | Core loop that glues everything together. |
+---
+
+## Project Evolution Summary
+__________________________________________________________________________________________________________________________
+|           Phase              |    Approach      |                              Reasoning                               |    
+|------------------------------|------------------|----------------------------------------------------------------------|
+| Cloud-based APIs             |    Avoided       | Requires internet + costs + latency.                                 |
+| Custom LoRA Fine-Tuning      |   Considered     | Ultimately unnecessary. Base model performs well with prompt tuning. |
+| GGUF Local Model + llama-cpp |    Final         | Fast, offline, efficient on macOS.                                   |
+|------------------------------------------------------------------------------------------------------------------------|
 
 ---
 
