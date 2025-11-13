@@ -1,4 +1,3 @@
-# detect_screen.py
 import subprocess
 
 def get_active_app_info():
@@ -15,20 +14,55 @@ def get_active_app_info():
     end tell
     return frontApp & "||" & winTitle
     '''
-    
-
-
-    raw = subprocess.check_output(["osascript", "-e", script]).decode().strip()
-    app, title = raw.split("||")
-    return {
-        "app": app,
-        "window_title": title
-    }
-    
-def get_browser_url(app):
     try:
-        import subprocess, json
-        script = 'tell application "Google Chrome" to return URL of active tab of front window'
-        return subprocess.check_output(["osascript", "-e", script]).decode().strip()
-    except:
+        raw = subprocess.check_output(["osascript", "-e", script]).decode().strip()
+        app, title = raw.split("||")
+        return {"app": app, "window_title": title}
+    except subprocess.CalledProcessError:
+        return {"app": None, "window_title": None}
+
+
+def get_browser_url(app):
+    """
+    Return URL of active tab for Chrome or Safari.
+    If no window is open, returns None instead of raising.
+    """
+    if app not in ("Google Chrome", "Safari"):
+        return None
+
+    if app == "Google Chrome":
+        script = r'''
+        tell application "Google Chrome"
+            if (count of windows) > 0 then
+                tell front window
+                    if (count of tabs) > 0 then
+                        return URL of active tab
+                    else
+                        return "NO_TABS"
+                    end if
+                end tell
+            else
+                return "NO_WINDOW"
+            end if
+        end tell
+        '''
+    else:
+        script = r'''
+        tell application "Safari"
+            if (count of windows) > 0 then
+                tell front window
+                    return URL of current tab
+                end tell
+            else
+                return "NO_WINDOW"
+            end if
+        end tell
+        '''
+
+    try:
+        output = subprocess.check_output(["osascript", "-e", script]).decode().strip()
+        if output in ("NO_WINDOW", "NO_TABS", ""):
+            return None
+        return output
+    except subprocess.CalledProcessError:
         return None
