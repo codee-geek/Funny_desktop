@@ -9,17 +9,24 @@ from chatbox import toggle_overlay_expansion
 last_roast = "starting..."
 window = None
 label = None
+chat_active = False
 
-from AppKit import NSWindow
+
+def refresh_chat_view():
+    """Request chat panel (if visible) to refresh its content."""
+    try:
+        import chatbox
+
+        chatbox.refresh_conversation_if_visible()
+    except Exception as e:
+        print(f"[OVERLAY] Unable to refresh chat view: {e}")
 
 class OverlayWindow(NSWindow):
     """A key + main borderless window that still accepts keyboard focus"""
     def canBecomeKeyWindow(self):
-        print("[DEBUG] canBecomeKeyWindow called -> True")
         return True
 
     def canBecomeMainWindow(self):
-        print("[DEBUG] canBecomeMainWindow called -> True")
         return True
 
 class ClickableView(NSView):
@@ -35,8 +42,21 @@ class ClickableView(NSView):
         global window
         w = self.window()
         if w:
+            content = w.contentView()
+            click_point = self.convertPoint_fromView_(event.locationInWindow(), None)
+
+            # If chat container is visible, clicking inside should not toggle
+            if hasattr(content, "chat_container"):
+                chat_frame = content.chat_container.frame()
+                if (chat_frame.origin.x <= click_point.x <= chat_frame.origin.x + chat_frame.size.width and
+                        chat_frame.origin.y <= click_point.y <= chat_frame.origin.y + chat_frame.size.height):
+                    w.makeKeyAndOrderFront_(None)
+                    if hasattr(content, "input_box"):
+                        w.makeFirstResponder_(content.input_box)
+                    return
+
             w.makeKeyAndOrderFront_(None)
-        toggle_overlay_expansion(window)
+        toggle_overlay_expansion(window, label)
 
 
 class AppDelegate(NSObject):
@@ -65,6 +85,7 @@ class AppDelegate(NSObject):
         # ---- Clickable Background ----
         content = ClickableView.alloc().initWithFrame_(rect)
         window.setContentView_(content)
+        content.roast_label = None
         content.setWantsLayer_(True)
         layer = content.layer()
         layer.setCornerRadius_(12)
@@ -81,17 +102,21 @@ class AppDelegate(NSObject):
         label.setEditable_(False)
         label.setSelectable_(False)
         content.addSubview_(label)
+        content.roast_label = label
 
-        # ---- Update timer ----
+        # ---- Update timer (reduced frequency for better performance) ----
         NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_(
-            0.35, self, "updateText:", None, True
+            0.5, self, "updateText:", None, True
         )
 
-        # Critical fix: Activate app *after* showing the window
+        # Activate app *after* showing the window
         NSApplication.sharedApplication().activateIgnoringOtherApps_(True)
 
     def updateText_(self, timer):
-        label.setStringValue_(last_roast)
+        """Update label text if it has changed."""
+        global label, last_roast
+        if label and label.stringValue() != last_roast:
+            label.setStringValue_(last_roast)
 
 
 def run_overlay():

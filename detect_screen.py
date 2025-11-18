@@ -1,6 +1,7 @@
 import subprocess
 
 def get_active_app_info():
+    """Get the currently active application and window title."""
     script = r'''
     tell application "System Events"
         set frontApp to name of first process whose frontmost is true
@@ -15,10 +16,16 @@ def get_active_app_info():
     return frontApp & "||" & winTitle
     '''
     try:
-        raw = subprocess.check_output(["osascript", "-e", script]).decode().strip()
-        app, title = raw.split("||")
-        return {"app": app, "window_title": title}
-    except subprocess.CalledProcessError:
+        raw = subprocess.check_output(
+            ["osascript", "-e", script],
+            stderr=subprocess.DEVNULL,
+            timeout=2
+        ).decode().strip()
+        if "||" in raw:
+            app, title = raw.split("||", 1)
+            return {"app": app, "window_title": title}
+        return {"app": None, "window_title": None}
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, ValueError):
         return {"app": None, "window_title": None}
 
 
@@ -60,9 +67,13 @@ def get_browser_url(app):
         '''
 
     try:
-        output = subprocess.check_output(["osascript", "-e", script]).decode().strip()
+        output = subprocess.check_output(
+            ["osascript", "-e", script],
+            stderr=subprocess.DEVNULL,
+            timeout=2
+        ).decode().strip()
         if output in ("NO_WINDOW", "NO_TABS", ""):
             return None
         return output
-    except subprocess.CalledProcessError:
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
         return None

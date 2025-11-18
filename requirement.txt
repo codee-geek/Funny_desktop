@@ -1,3 +1,2 @@
 llama-cpp-python[metal]
 pyobjc
-psutil
